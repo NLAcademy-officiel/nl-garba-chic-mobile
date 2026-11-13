@@ -5,9 +5,9 @@ const categories = ["Tout", "Garba", "Cuisine camerounaise", "Boissons"];
 
 const dishes = [
   { name: "Garba traditionnel", detail: "Attiéké, poisson thon et accompagnements", category: "INCONTOURNABLE", price: "À partir de 1 000 FCFA" },
-  { name: "Ndolé", detail: "Une spécialité camerounaise généreuse", category: "CUISINE CAMEROUNAISE", price: "3 000 à 4 500 FCFA" },
-  { name: "Poulet DG", detail: "Poulet mijoté et plantains", category: "CUISINE CAMEROUNAISE", price: "3 000 à 4 500 FCFA" },
-  { name: "Eru", detail: "Un classique de la cuisine du Cameroun", category: "CUISINE CAMEROUNAISE", price: "3 000 à 4 500 FCFA" }
+  { name: "Ndolé", detail: "Feuilles de ndolé, crevettes et accompagnement", category: "CUISINE CAMEROUNAISE", price: "3 000 à 4 500 FCFA", image: require("../assets/images/dishes/ndole.jpg") },
+  { name: "Koki", detail: "Gâteau de haricots traditionnel, servi avec plantain", category: "CUISINE CAMEROUNAISE", price: "3 000 à 4 500 FCFA", image: require("../assets/images/dishes/koki.jpg") },
+  { name: "Taro sauce jaune", detail: "Taro accompagné de sa sauce jaune traditionnelle", category: "CUISINE CAMEROUNAISE", price: "3 000 à 4 500 FCFA", image: require("../assets/images/dishes/taro-sauce-jaune.jpg") }
 ];
 
 export default function HomeScreen() {
@@ -57,9 +57,13 @@ export default function HomeScreen() {
 
           {dishes.map((dish) => (
             <TouchableOpacity key={dish.name} style={styles.dishCard} activeOpacity={0.85}>
-              <View style={styles.dishArtwork}>
-                <Text style={styles.dishArtworkText}>NL</Text>
-              </View>
+              {dish.image ? (
+                <Image source={dish.image} style={styles.dishPhoto} resizeMode="cover" accessibilityLabel={dish.name} />
+              ) : (
+                <View style={styles.dishArtwork}>
+                  <Text style={styles.dishArtworkText}>NL</Text>
+                </View>
+              )}
               <View style={styles.dishInfo}>
                 <Text style={styles.dishCategory}>{dish.category}</Text>
                 <Text style={styles.dishName}>{dish.name}</Text>
@@ -117,6 +121,7 @@ const styles = StyleSheet.create({
   categoryTextActive: { color: "#FFFFFF" },
   dishCard: { backgroundColor: "#FFFFFF", borderRadius: 9, marginBottom: 12, padding: 11, flexDirection: "row", gap: 14, elevation: 1 },
   dishArtwork: { width: 104, height: 112, borderRadius: 6, backgroundColor: "#211E18", alignItems: "center", justifyContent: "center" },
+  dishPhoto: { width: 104, height: 112, borderRadius: 6, backgroundColor: "#E8E1D5" },
   dishArtworkText: { color: "#D6A84B", fontSize: 30, fontWeight: "900", letterSpacing: 2 },
   dishInfo: { flex: 1, justifyContent: "center", paddingVertical: 4 },
   dishCategory: { color: "#B18A3C", fontSize: 8, fontWeight: "900", letterSpacing: 1 },
