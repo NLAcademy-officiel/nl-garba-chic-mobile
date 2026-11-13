@@ -1,12 +1,17 @@
+
 name: Build NL Garba Chic Android APK
 
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build-android:
     name: Build Android APK with EAS
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -18,6 +23,16 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+
+      - name: Save package lock
+        run: |
+          git add package-lock.json
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Add package lock"
+            git push
+          fi
 
       - name: Build Android APK
         run: npx eas-cli@latest build --platform android --profile preview --non-interactive
