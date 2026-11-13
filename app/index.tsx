@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, Linking, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type Category = "Garba" | "Cuisine camerounaise";
@@ -15,6 +15,8 @@ type Dish = {
 };
 
 const categories = ["Tout", "Garba", "Cuisine camerounaise"] as const;
+const CUSTOMER_SERVICE_PHONE = "+2250554315148";
+const WHATSAPP_URL = "https://wa.me/2250554315148";
 
 const dishes: Dish[] = [
   {
@@ -25,7 +27,7 @@ const dishes: Dish[] = [
     categoryLabel: "SPÉCIALITÉ IVOIRIENNE",
     priceLabel: "À partir de 1 000 FCFA",
     priceFrom: 1000,
-    image: null
+    image: require("../assets/images/dishes/garba.jpg")
   },
   {
     id: "ndole",
@@ -186,7 +188,8 @@ export default function HomeScreen() {
         <View style={styles.delivery}>
           <Text style={styles.deliveryKicker}>NL GARBA CHIC À ABIDJAN</Text>
           <Text style={styles.deliveryTitle}>Vos envies, notre cuisine.</Text>
-          <Text style={styles.deliveryText}>Les modalités de livraison et de commande seront précisées avant la validation de votre panier.</Text>
+          <Text style={styles.deliveryText}>Commandes et service client : {CUSTOMER_SERVICE_PHONE}. Contactez-nous pour confirmer votre commande, les portions et la livraison.</Text>
+          <TouchableOpacity style={styles.primaryButton} onPress={() => Linking.openURL(WHATSAPP_URL)}><Text style={styles.primaryButtonText}>COMMANDER SUR WHATSAPP  →</Text></TouchableOpacity>
         </View>
 
         <View style={styles.footer}>
