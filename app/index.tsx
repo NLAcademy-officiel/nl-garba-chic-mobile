@@ -27,7 +27,7 @@ const dishes: Dish[] = [
     categoryLabel: "SPÉCIALITÉ IVOIRIENNE",
     priceLabel: "À partir de 1 000 FCFA",
     priceFrom: 1000,
-    image: require("../assets/images/dishes/garba.jpg")
+    image: null
   },
   {
     id: "ndole",
