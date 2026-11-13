@@ -4,10 +4,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const categories = ["Tout", "Garba", "Cuisine camerounaise", "Boissons"];
 
 const dishes = [
-  { name: "Garba traditionnel", detail: "Attiéké, poisson thon et accompagnements", category: "INCONTOURNABLE" },
-  { name: "Ndolé", detail: "Une spécialité camerounaise généreuse", category: "CUISINE CAMEROUNAISE" },
-  { name: "Poulet DG", detail: "Poulet mijoté et plantains", category: "CUISINE CAMEROUNAISE" },
-  { name: "Eru", detail: "Un classique de la cuisine du Cameroun", category: "CUISINE CAMEROUNAISE" }
+  { name: "Garba traditionnel", detail: "Attiéké, poisson thon et accompagnements", category: "INCONTOURNABLE", price: "À partir de 1 000 FCFA" },
+  { name: "Ndolé", detail: "Une spécialité camerounaise généreuse", category: "CUISINE CAMEROUNAISE", price: "3 000 à 4 500 FCFA" },
+  { name: "Poulet DG", detail: "Poulet mijoté et plantains", category: "CUISINE CAMEROUNAISE", price: "3 000 à 4 500 FCFA" },
+  { name: "Eru", detail: "Un classique de la cuisine du Cameroun", category: "CUISINE CAMEROUNAISE", price: "3 000 à 4 500 FCFA" }
 ];
 
 export default function HomeScreen() {
@@ -62,6 +62,7 @@ export default function HomeScreen() {
                 <Text style={styles.dishCategory}>{dish.category}</Text>
                 <Text style={styles.dishName}>{dish.name}</Text>
                 <Text style={styles.dishDetail}>{dish.detail}</Text>
+                <Text style={styles.dishPrice}>{dish.price}</Text>
                 <Text style={styles.dishAction}>DÉCOUVRIR  →</Text>
               </View>
             </TouchableOpacity>
@@ -118,6 +119,7 @@ const styles = StyleSheet.create({
   dishCategory: { color: "#B18A3C", fontSize: 8, fontWeight: "900", letterSpacing: 1 },
   dishName: { color: "#1B1B1B", fontSize: 16, fontWeight: "900", marginTop: 7 },
   dishDetail: { color: "#77736B", fontSize: 10, lineHeight: 15, marginTop: 4 },
+  dishPrice: { color: "#171717", fontSize: 11, fontWeight: "900", marginTop: 7 },
   dishAction: { color: "#8A6B32", fontSize: 9, fontWeight: "900", letterSpacing: 0.8, marginTop: 9 },
   delivery: { marginHorizontal: 20, backgroundColor: "#EDE7D9", borderRadius: 8, padding: 22, marginBottom: 25 },
   deliveryKicker: { color: "#99752F", fontSize: 9, fontWeight: "900", letterSpacing: 1.5 },
