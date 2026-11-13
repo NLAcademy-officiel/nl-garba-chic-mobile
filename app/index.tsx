@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Image, Linking, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import garbaImageBase64 from "../assets/images/dishes/garba-image";
 
 type Category = "Garba" | "Cuisine camerounaise";
 type Dish = {
@@ -27,7 +28,7 @@ const dishes: Dish[] = [
     categoryLabel: "SPÉCIALITÉ IVOIRIENNE",
     priceLabel: "À partir de 1 000 FCFA",
     priceFrom: 1000,
-    image: null
+    image: { uri: `data:image/jpeg;base64,${garbaImageBase64}` }
   },
   {
     id: "ndole",
