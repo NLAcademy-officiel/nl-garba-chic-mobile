@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const categories = ["Tout", "Garba", "Cuisine camerounaise", "Boissons"];
 
 const dishes = [
-  { name: "Garba traditionnel", detail: "Attiéké, poisson thon et accompagnements", category: "INCONTOURNABLE", price: "À partir de 1 000 FCFA" },
+  { name: "Garba traditionnel", detail: "Attiéké, poisson thon et accompagnements", category: "INCONTOURNABLE", price: "À partir de 1 000 FCFA", image: null },
   { name: "Ndolé", detail: "Feuilles de ndolé, crevettes et accompagnement", category: "CUISINE CAMEROUNAISE", price: "3 000 à 4 500 FCFA", image: require("../assets/images/dishes/ndole.jpg") },
   { name: "Koki", detail: "Gâteau de haricots traditionnel, servi avec plantain", category: "CUISINE CAMEROUNAISE", price: "3 000 à 4 500 FCFA", image: require("../assets/images/dishes/koki.jpg") },
   { name: "Taro sauce jaune", detail: "Taro accompagné de sa sauce jaune traditionnelle", category: "CUISINE CAMEROUNAISE", price: "3 000 à 4 500 FCFA", image: require("../assets/images/dishes/taro-sauce-jaune.jpg") }
