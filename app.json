@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "NL Garba Chic",
+    "slug": "nl-garba-chic-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "scheme": "nlgarbachic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "ci.nlacademy.nlgarbachic"
+    },
+    "android": {
+      "package": "ci.nlacademy.nlgarbachic",
+      "adaptiveIcon": {
+        "backgroundColor": "#101010"
+      }
+    },
+    "plugins": ["expo-router"],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
