@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Image, Linking, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Image, Linking, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import garbaImageBase64 from "../assets/images/dishes/garba-image";
 
@@ -66,6 +66,10 @@ export default function HomeScreen() {
   const [activeCategory, setActiveCategory] = useState<(typeof categories)[number]>("Tout");
   const [cart, setCart] = useState<Record<string, number>>({});
   const [cartOpen, setCartOpen] = useState(false);
+  const [customerName, setCustomerName] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
+  const [deliveryAddress, setDeliveryAddress] = useState("");
+  const [orderNote, setOrderNote] = useState("");
 
   const visibleDishes = useMemo(
     () => activeCategory === "Tout" ? dishes : dishes.filter((dish) => dish.category === activeCategory),
@@ -78,6 +82,38 @@ export default function HomeScreen() {
 
   const addToCart = (id: string) => {
     setCart((current) => ({ ...current, [id]: (current[id] ?? 0) + 1 }));
+  };
+
+  const sendOrderToWhatsApp = () => {
+    if (cartItems.length === 0) {
+      Alert.alert("Panier vide", "Ajoutez au moins un plat avant de passer commande.");
+      return;
+    }
+    if (!customerName.trim() || !customerPhone.trim() || !deliveryAddress.trim()) {
+      Alert.alert("Informations manquantes", "Veuillez renseigner votre nom, votre numéro de téléphone et votre adresse ou quartier.");
+      return;
+    }
+
+    const lines = cartItems.map((dish) =>
+      `• ${dish.name} x${cart[dish.id]} — ${dish.priceLabel}`
+    ).join("\\n");
+    const message = [
+      "Bonjour NL Garba Chic, je souhaite passer cette commande :",
+      "",
+      lines,
+      "",
+      `Estimation minimale : ${cartMinimum.toLocaleString("fr-FR")} FCFA`,
+      "",
+      `Nom : ${customerName.trim()}`,
+      `Téléphone : ${customerPhone.trim()}`,
+      `Adresse / quartier : ${deliveryAddress.trim()}`,
+      orderNote.trim() ? `Précisions : ${orderNote.trim()}` : "",
+      "",
+      "Merci de me confirmer la disponibilité, le montant définitif et les modalités de livraison."
+    ].filter(Boolean).join("\\n");
+
+    Linking.openURL(`https://wa.me/2250554315148?text=${encodeURIComponent(message)}`)
+      .catch(() => Alert.alert("Impossible d'ouvrir WhatsApp", "Vous pouvez contacter le service client au +225 05 54 31 51 48."));
   };
 
   const removeFromCart = (id: string) => {
@@ -180,7 +216,16 @@ export default function HomeScreen() {
                   </View>
                 ))}
                 <Text style={styles.cartEstimate}>Estimation minimale : {cartMinimum.toLocaleString("fr-FR")} FCFA</Text>
-                <Text style={styles.cartNotice}>Le total définitif dépendra de la portion choisie. La livraison et le paiement seront précisés avant confirmation.</Text>
+                <Text style={styles.cartNotice}>Le total définitif dépendra de la portion choisie. Les frais et modalités de livraison seront confirmés par le service client.</Text>
+                <Text style={styles.orderFormTitle}>Vos coordonnées</Text>
+                <TextInput value={customerName} onChangeText={setCustomerName} placeholder="Votre nom complet" placeholderTextColor="#8C877D" style={styles.orderInput} />
+                <TextInput value={customerPhone} onChangeText={setCustomerPhone} placeholder="Votre numéro de téléphone" placeholderTextColor="#8C877D" keyboardType="phone-pad" style={styles.orderInput} />
+                <TextInput value={deliveryAddress} onChangeText={setDeliveryAddress} placeholder="Commune, quartier et adresse de livraison" placeholderTextColor="#8C877D" style={styles.orderInput} />
+                <TextInput value={orderNote} onChangeText={setOrderNote} placeholder="Précisions (facultatif)" placeholderTextColor="#8C877D" multiline style={[styles.orderInput, styles.orderNoteInput]} />
+                <TouchableOpacity style={styles.orderButton} onPress={sendOrderToWhatsApp}>
+                  <Text style={styles.orderButtonText}>ENVOYER LA COMMANDE SUR WHATSAPP</Text>
+                </TouchableOpacity>
+                <Text style={styles.cartNotice}>Votre commande sera envoyée au +225 05 54 31 51 48. Elle ne sera confirmée qu'après validation par NL Garba Chic.</Text>
               </>
             )}
           </View>
@@ -252,6 +297,11 @@ const styles = StyleSheet.create({
   quantityButton: { width: 27, height: 27, borderRadius: 14, backgroundColor: "#F0E9DB", alignItems: "center", justifyContent: "center" },
   quantityText: { color: "#171717", fontSize: 17, fontWeight: "800" },
   quantityValue: { color: "#171717", fontSize: 13, fontWeight: "900" },
+  orderFormTitle: { color: "#191919", fontSize: 15, fontWeight: "900", marginTop: 20, marginBottom: 9 },
+  orderInput: { borderWidth: 1, borderColor: "#DED9CE", borderRadius: 6, backgroundColor: "#FAF9F6", paddingHorizontal: 12, paddingVertical: 11, color: "#191919", fontSize: 12, marginTop: 8 },
+  orderNoteInput: { minHeight: 74, textAlignVertical: "top" },
+  orderButton: { backgroundColor: "#1F8F50", borderRadius: 5, paddingHorizontal: 13, paddingVertical: 15, alignItems: "center", marginTop: 13 },
+  orderButtonText: { color: "#FFFFFF", fontSize: 10, fontWeight: "900", letterSpacing: 0.4 },
   cartEstimate: { color: "#171717", fontSize: 13, fontWeight: "900", marginTop: 14 },
   cartNotice: { color: "#77736B", fontSize: 10, lineHeight: 16, marginTop: 7 },
   delivery: { marginHorizontal: 20, backgroundColor: "#EDE7D9", borderRadius: 8, padding: 22, marginBottom: 25 },
