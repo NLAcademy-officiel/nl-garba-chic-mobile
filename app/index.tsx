@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   categoryActive: { backgroundColor: "#171717", borderColor: "#171717" },
   categoryText: { color: "#615D55", fontSize: 11, fontWeight: "700" },
   categoryTextActive: { color: "#FFFFFF" },
-  dishCard: { backgroundColor: "#FFFFFF", borderRadius: 9, marginBottom: 12, padding: 11, flexDirection: "row", gap: 14", elevation: 1 },
+  dishCard: { backgroundColor: "#FFFFFF", borderRadius: 9, marginBottom: 12, padding: 11, flexDirection: "row", gap: 14, elevation: 1 },
   dishArtwork: { width: 104, height: 112, borderRadius: 6, backgroundColor: "#211E18", alignItems: "center", justifyContent: "center" },
   dishArtworkText: { color: "#D6A84B", fontSize: 30, fontWeight: "900", letterSpacing: 2 },
   dishInfo: { flex: 1, justifyContent: "center", paddingVertical: 4 },
