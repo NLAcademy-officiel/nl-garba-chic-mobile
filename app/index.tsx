@@ -1,16 +1,91 @@
+import { useMemo, useState } from "react";
 import { Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const categories = ["Tout", "Garba", "Cuisine camerounaise", "Boissons"];
+type Category = "Garba" | "Cuisine camerounaise";
+type Dish = {
+  id: string;
+  name: string;
+  detail: string;
+  category: Category;
+  categoryLabel: string;
+  priceLabel: string;
+  priceFrom: number;
+  image: any;
+};
 
-const dishes = [
-  { name: "Garba traditionnel", detail: "Attiéké, poisson thon et accompagnements", category: "INCONTOURNABLE", price: "À partir de 1 000 FCFA", image: null },
-  { name: "Ndolé", detail: "Feuilles de ndolé, crevettes et accompagnement", category: "CUISINE CAMEROUNAISE", price: "3 000 à 4 500 FCFA", image: require("../assets/images/dishes/ndole.jpg") },
-  { name: "Koki", detail: "Gâteau de haricots traditionnel, servi avec plantain", category: "CUISINE CAMEROUNAISE", price: "3 000 à 4 500 FCFA", image: require("../assets/images/dishes/koki.jpg") },
-  { name: "Taro sauce jaune", detail: "Taro accompagné de sa sauce jaune traditionnelle", category: "CUISINE CAMEROUNAISE", price: "3 000 à 4 500 FCFA", image: require("../assets/images/dishes/taro-sauce-jaune.jpg") }
+const categories = ["Tout", "Garba", "Cuisine camerounaise"] as const;
+
+const dishes: Dish[] = [
+  {
+    id: "garba",
+    name: "Garba traditionnel",
+    detail: "Attiéké, poisson thon et accompagnements",
+    category: "Garba",
+    categoryLabel: "SPÉCIALITÉ IVOIRIENNE",
+    priceLabel: "À partir de 1 000 FCFA",
+    priceFrom: 1000,
+    image: null
+  },
+  {
+    id: "ndole",
+    name: "Ndolé",
+    detail: "Feuilles de ndolé, crevettes et accompagnement",
+    category: "Cuisine camerounaise",
+    categoryLabel: "CUISINE CAMEROUNAISE",
+    priceLabel: "3 000 à 4 500 FCFA",
+    priceFrom: 3000,
+    image: require("../assets/images/dishes/ndole.jpg")
+  },
+  {
+    id: "koki",
+    name: "Koki",
+    detail: "Gâteau de haricots traditionnel, servi avec plantain",
+    category: "Cuisine camerounaise",
+    categoryLabel: "CUISINE CAMEROUNAISE",
+    priceLabel: "3 000 à 4 500 FCFA",
+    priceFrom: 3000,
+    image: require("../assets/images/dishes/koki.jpg")
+  },
+  {
+    id: "taro",
+    name: "Taro sauce jaune",
+    detail: "Taro accompagné de sa sauce jaune traditionnelle",
+    category: "Cuisine camerounaise",
+    categoryLabel: "CUISINE CAMEROUNAISE",
+    priceLabel: "3 000 à 4 500 FCFA",
+    priceFrom: 3000,
+    image: require("../assets/images/dishes/taro-sauce-jaune.jpg")
+  }
 ];
 
 export default function HomeScreen() {
+  const [activeCategory, setActiveCategory] = useState<(typeof categories)[number]>("Tout");
+  const [cart, setCart] = useState<Record<string, number>>({});
+  const [cartOpen, setCartOpen] = useState(false);
+
+  const visibleDishes = useMemo(
+    () => activeCategory === "Tout" ? dishes : dishes.filter((dish) => dish.category === activeCategory),
+    [activeCategory]
+  );
+
+  const cartItems = dishes.filter((dish) => (cart[dish.id] ?? 0) > 0);
+  const cartCount = Object.values(cart).reduce((total, quantity) => total + quantity, 0);
+  const cartMinimum = cartItems.reduce((total, dish) => total + dish.priceFrom * (cart[dish.id] ?? 0), 0);
+
+  const addToCart = (id: string) => {
+    setCart((current) => ({ ...current, [id]: (current[id] ?? 0) + 1 }));
+  };
+
+  const removeFromCart = (id: string) => {
+    setCart((current) => {
+      const next = { ...current };
+      if ((next[id] ?? 0) <= 1) delete next[id];
+      else next[id] -= 1;
+      return next;
+    });
+  };
+
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar barStyle="light-content" backgroundColor="#101010" />
@@ -22,17 +97,17 @@ export default function HomeScreen() {
             resizeMode="contain"
             accessibilityLabel="Logo officiel NL Garba Chic"
           />
-          <TouchableOpacity accessibilityLabel="Ouvrir le panier" style={styles.cartButton}>
+          <TouchableOpacity accessibilityLabel="Ouvrir le panier" style={styles.cartButton} onPress={() => setCartOpen((open) => !open)}>
             <Text style={styles.cartIcon}>PANIER</Text>
-            <View style={styles.cartCount}><Text style={styles.cartCountText}>0</Text></View>
+            <View style={styles.cartCount}><Text style={styles.cartCountText}>{cartCount}</Text></View>
           </TouchableOpacity>
         </View>
 
         <View style={styles.hero}>
           <Text style={styles.eyebrow}>LES SAVEURS QUI RASSEMBLENT</Text>
-          <Text style={styles.heroTitle}>Le goût du vrai.{ "\n" }Le plaisir chez vous.</Text>
+          <Text style={styles.heroTitle}>Le goût du vrai.{"\n"}Le plaisir chez vous.</Text>
           <Text style={styles.heroText}>Retrouvez vos spécialités préférées et commandez simplement depuis Abidjan.</Text>
-          <TouchableOpacity style={styles.primaryButton} onPress={() => {}}>
+          <TouchableOpacity style={styles.primaryButton} onPress={() => { setActiveCategory("Tout"); setCartOpen(false); }}>
             <Text style={styles.primaryButtonText}>DÉCOUVRIR LE MENU  →</Text>
           </TouchableOpacity>
           <View style={styles.heroDecor}><Text style={styles.heroDecorText}>NL</Text></View>
@@ -44,36 +119,69 @@ export default function HomeScreen() {
               <Text style={styles.kicker}>À LA CARTE</Text>
               <Text style={styles.sectionTitle}>Nos spécialités</Text>
             </View>
-            <Text style={styles.seeAll}>VOIR TOUT</Text>
+            <Text style={styles.seeAll}> {visibleDishes.length} PLATS </Text>
           </View>
 
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryList}>
-            {categories.map((category, index) => (
-              <TouchableOpacity key={category} style={[styles.category, index === 0 && styles.categoryActive]}>
-                <Text style={[styles.categoryText, index === 0 && styles.categoryTextActive]}>{category}</Text>
-              </TouchableOpacity>
-            ))}
+            {categories.map((category) => {
+              const selected = activeCategory === category;
+              return (
+                <TouchableOpacity key={category} onPress={() => setActiveCategory(category)} style={[styles.category, selected && styles.categoryActive]}>
+                  <Text style={[styles.categoryText, selected && styles.categoryTextActive]}>{category}</Text>
+                </TouchableOpacity>
+              );
+            })}
           </ScrollView>
 
-          {dishes.map((dish) => (
-            <TouchableOpacity key={dish.name} style={styles.dishCard} activeOpacity={0.85}>
+          {visibleDishes.map((dish) => (
+            <View key={dish.id} style={styles.dishCard}>
               {dish.image ? (
                 <Image source={dish.image} style={styles.dishPhoto} resizeMode="cover" accessibilityLabel={dish.name} />
               ) : (
-                <View style={styles.dishArtwork}>
-                  <Text style={styles.dishArtworkText}>NL</Text>
-                </View>
+                <View style={styles.dishArtwork}><Text style={styles.dishArtworkText}>NL</Text></View>
               )}
               <View style={styles.dishInfo}>
-                <Text style={styles.dishCategory}>{dish.category}</Text>
+                <Text style={styles.dishCategory}>{dish.categoryLabel}</Text>
                 <Text style={styles.dishName}>{dish.name}</Text>
                 <Text style={styles.dishDetail}>{dish.detail}</Text>
-                <Text style={styles.dishPrice}>{dish.price}</Text>
-                <Text style={styles.dishAction}>DÉCOUVRIR  →</Text>
+                <Text style={styles.dishPrice}>{dish.priceLabel}</Text>
+                <TouchableOpacity onPress={() => addToCart(dish.id)} style={styles.addButton}>
+                  <Text style={styles.addButtonText}>AJOUTER AU PANIER  +</Text>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
+            </View>
           ))}
         </View>
+
+        {cartOpen && (
+          <View style={styles.cartPanel}>
+            <View style={styles.cartHeading}>
+              <Text style={styles.cartTitle}>Votre panier</Text>
+              <TouchableOpacity onPress={() => setCartOpen(false)}><Text style={styles.closeCart}>FERMER ✕</Text></TouchableOpacity>
+            </View>
+            {cartItems.length === 0 ? (
+              <Text style={styles.emptyCart}>Votre panier est vide. Ajoutez un plat pour commencer.</Text>
+            ) : (
+              <>
+                {cartItems.map((dish) => (
+                  <View key={dish.id} style={styles.cartLine}>
+                    <View style={styles.cartLineInfo}>
+                      <Text style={styles.cartDishName}>{dish.name}</Text>
+                      <Text style={styles.cartDishPrice}>{dish.priceLabel}</Text>
+                    </View>
+                    <View style={styles.quantityControls}>
+                      <TouchableOpacity style={styles.quantityButton} onPress={() => removeFromCart(dish.id)}><Text style={styles.quantityText}>−</Text></TouchableOpacity>
+                      <Text style={styles.quantityValue}>{cart[dish.id]}</Text>
+                      <TouchableOpacity style={styles.quantityButton} onPress={() => addToCart(dish.id)}><Text style={styles.quantityText}>+</Text></TouchableOpacity>
+                    </View>
+                  </View>
+                ))}
+                <Text style={styles.cartEstimate}>Estimation minimale : {cartMinimum.toLocaleString("fr-FR")} FCFA</Text>
+                <Text style={styles.cartNotice}>Le total définitif dépendra de la portion choisie. La livraison et le paiement seront précisés avant confirmation.</Text>
+              </>
+            )}
+          </View>
+        )}
 
         <View style={styles.delivery}>
           <Text style={styles.deliveryKicker}>NL GARBA CHIC À ABIDJAN</Text>
@@ -94,9 +202,6 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#F7F5F0" },
   header: { backgroundColor: "#101010", paddingHorizontal: 18, paddingTop: 4, paddingBottom: 4, flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   logo: { width: 174, height: 116, marginLeft: -10 },
-  brand: { color: "#FFFFFF", fontSize: 19, fontWeight: "900", letterSpacing: 1.2 },
-  brandGold: { color: "#D6A84B" },
-  tagline: { color: "#B8B3A9", fontSize: 8, letterSpacing: 1.15, marginTop: 5 },
   cartButton: { borderWidth: 1, borderColor: "#51432B", borderRadius: 20, paddingHorizontal: 13, paddingVertical: 9, flexDirection: "row", alignItems: "center", gap: 8 },
   cartIcon: { color: "#FFFFFF", fontSize: 9, fontWeight: "800", letterSpacing: 1 },
   cartCount: { backgroundColor: "#D6A84B", borderRadius: 10, width: 19, height: 19, alignItems: "center", justifyContent: "center" },
@@ -128,7 +233,23 @@ const styles = StyleSheet.create({
   dishName: { color: "#1B1B1B", fontSize: 16, fontWeight: "900", marginTop: 7 },
   dishDetail: { color: "#77736B", fontSize: 10, lineHeight: 15, marginTop: 4 },
   dishPrice: { color: "#171717", fontSize: 11, fontWeight: "900", marginTop: 7 },
-  dishAction: { color: "#8A6B32", fontSize: 9, fontWeight: "900", letterSpacing: 0.8, marginTop: 9 },
+  addButton: { alignSelf: "flex-start", backgroundColor: "#171717", borderRadius: 4, paddingHorizontal: 10, paddingVertical: 8, marginTop: 9 },
+  addButtonText: { color: "#D6A84B", fontSize: 8, fontWeight: "900", letterSpacing: 0.5 },
+  cartPanel: { marginHorizontal: 20, marginBottom: 22, padding: 17, backgroundColor: "#FFFFFF", borderRadius: 9, borderWidth: 1, borderColor: "#E7E0D3" },
+  cartHeading: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 },
+  cartTitle: { color: "#191919", fontSize: 20, fontWeight: "900" },
+  closeCart: { color: "#8A6B32", fontSize: 9, fontWeight: "900" },
+  emptyCart: { color: "#77736B", fontSize: 12, lineHeight: 19 },
+  cartLine: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: 11, borderBottomWidth: 1, borderBottomColor: "#EEEAE2" },
+  cartLineInfo: { flex: 1, paddingRight: 8 },
+  cartDishName: { color: "#191919", fontSize: 13, fontWeight: "800" },
+  cartDishPrice: { color: "#77736B", fontSize: 10, marginTop: 4 },
+  quantityControls: { flexDirection: "row", alignItems: "center", gap: 10 },
+  quantityButton: { width: 27, height: 27, borderRadius: 14, backgroundColor: "#F0E9DB", alignItems: "center", justifyContent: "center" },
+  quantityText: { color: "#171717", fontSize: 17, fontWeight: "800" },
+  quantityValue: { color: "#171717", fontSize: 13, fontWeight: "900" },
+  cartEstimate: { color: "#171717", fontSize: 13, fontWeight: "900", marginTop: 14 },
+  cartNotice: { color: "#77736B", fontSize: 10, lineHeight: 16, marginTop: 7 },
   delivery: { marginHorizontal: 20, backgroundColor: "#EDE7D9", borderRadius: 8, padding: 22, marginBottom: 25 },
   deliveryKicker: { color: "#99752F", fontSize: 9, fontWeight: "900", letterSpacing: 1.5 },
   deliveryTitle: { color: "#1A1A1A", fontSize: 21, fontWeight: "900", marginTop: 9 },
