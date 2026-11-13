@@ -1,4 +1,4 @@
-import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const categories = ["Tout", "Garba", "Cuisine camerounaise", "Boissons"];
@@ -16,10 +16,12 @@ export default function HomeScreen() {
       <StatusBar barStyle="light-content" backgroundColor="#101010" />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <View>
-            <Text style={styles.brand}>NL <Text style={styles.brandGold}>GARBA CHIC</Text></Text>
-            <Text style={styles.tagline}>GARBA • CUISINE CAMEROUNAISE • LIVRAISON</Text>
-          </View>
+          <Image
+            source={require("../assets/images/nl-garba-chic-logo.jpg")}
+            style={styles.logo}
+            resizeMode="contain"
+            accessibilityLabel="Logo officiel NL Garba Chic"
+          />
           <TouchableOpacity accessibilityLabel="Ouvrir le panier" style={styles.cartButton}>
             <Text style={styles.cartIcon}>PANIER</Text>
             <View style={styles.cartCount}><Text style={styles.cartCountText}>0</Text></View>
@@ -86,7 +88,8 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#F7F5F0" },
-  header: { backgroundColor: "#101010", paddingHorizontal: 22, paddingTop: 16, paddingBottom: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  header: { backgroundColor: "#101010", paddingHorizontal: 18, paddingTop: 4, paddingBottom: 4, flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  logo: { width: 174, height: 116, marginLeft: -10 },
   brand: { color: "#FFFFFF", fontSize: 19, fontWeight: "900", letterSpacing: 1.2 },
   brandGold: { color: "#D6A84B" },
   tagline: { color: "#B8B3A9", fontSize: 8, letterSpacing: 1.15, marginTop: 5 },
