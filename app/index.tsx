@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import { Alert, Image, Linking, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import garbaImageBase64 from "../assets/images/dishes/garba-image";
 
 type Category = "Garba" | "Cuisine camerounaise";
 type Dish = {
@@ -28,7 +27,7 @@ const dishes: Dish[] = [
     categoryLabel: "SPÉCIALITÉ IVOIRIENNE",
     priceLabel: "À partir de 1 000 FCFA",
     priceFrom: 1000,
-    image: { uri: `data:image/jpeg;base64,${garbaImageBase64}` }
+    image: { uri: "https://loremflickr.com/640/480/garba,attiéké,fish" }
   },
   {
     id: "ndole",
@@ -38,7 +37,7 @@ const dishes: Dish[] = [
     categoryLabel: "CUISINE CAMEROUNAISE",
     priceLabel: "3 000 à 4 500 FCFA",
     priceFrom: 3000,
-    image: require("../assets/images/dishes/ndole.jpg")
+    image: { uri: "https://loremflickr.com/640/480/cameroon,ndole,food" }
   },
   {
     id: "koki",
@@ -48,7 +47,7 @@ const dishes: Dish[] = [
     categoryLabel: "CUISINE CAMEROUNAISE",
     priceLabel: "3 000 à 4 500 FCFA",
     priceFrom: 3000,
-    image: require("../assets/images/dishes/koki.jpg")
+    image: { uri: "https://loremflickr.com/640/480/koki,cameroon,food" }
   },
   {
     id: "taro",
@@ -58,7 +57,7 @@ const dishes: Dish[] = [
     categoryLabel: "CUISINE CAMEROUNAISE",
     priceLabel: "3 000 à 4 500 FCFA",
     priceFrom: 3000,
-    image: require("../assets/images/dishes/taro-sauce-jaune.jpg")
+    image: { uri: "https://loremflickr.com/640/480/taro,yellow,sauce,food" }
   }
 ];
 
@@ -130,12 +129,10 @@ export default function HomeScreen() {
       <StatusBar barStyle="light-content" backgroundColor="#101010" />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <Image
-            source={require("../assets/images/nl-garba-chic-logo.jpg")}
-            style={styles.logo}
-            resizeMode="contain"
-            accessibilityLabel="Logo officiel NL Garba Chic"
-          />
+          <View style={styles.logoWrap} accessibilityLabel="NL Garba Chic">
+            <Text style={styles.logoText}>NL GARBA CHIC</Text>
+            <Text style={styles.logoSub}>SAVEURS & CONVIVIALITÉ</Text>
+          </View>
           <TouchableOpacity accessibilityLabel="Ouvrir le panier" style={styles.cartButton} onPress={() => setCartOpen((open) => !open)}>
             <Text style={styles.cartIcon}>PANIER</Text>
             <View style={styles.cartCount}><Text style={styles.cartCountText}>{cartCount}</Text></View>
@@ -250,7 +247,9 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#F7F5F0" },
   header: { backgroundColor: "#101010", paddingHorizontal: 18, paddingTop: 4, paddingBottom: 4, flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  logo: { width: 174, height: 116, marginLeft: -10 },
+  logoWrap: { width: 174, height: 76, marginLeft: -10, justifyContent: "center" },
+  logoText: { color: "#D6A84B", fontSize: 19, fontWeight: "900", letterSpacing: 1.2 },
+  logoSub: { color: "#C9C4BA", fontSize: 7, fontWeight: "800", letterSpacing: 1.5, marginTop: 5 },
   cartButton: { borderWidth: 1, borderColor: "#51432B", borderRadius: 20, paddingHorizontal: 13, paddingVertical: 9, flexDirection: "row", alignItems: "center", gap: 8 },
   cartIcon: { color: "#FFFFFF", fontSize: 9, fontWeight: "800", letterSpacing: 1 },
   cartCount: { backgroundColor: "#D6A84B", borderRadius: 10, width: 19, height: 19, alignItems: "center", justifyContent: "center" },
